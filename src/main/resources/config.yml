@@ -1,0 +1,2 @@
+# Port, auf dem die Seite und /stats.json erreichbar sind
+port: 8123

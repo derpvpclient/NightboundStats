@@ -1,0 +1,4 @@
+name: NightboundStats
+main: de.nightbound.NightboundStats
+version: 1.0
+api-version: '26.1'

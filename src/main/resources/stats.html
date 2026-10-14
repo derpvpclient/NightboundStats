@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="de"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nightbound · Stats</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0b0b14;--bg2:#11111e;--card:#171726;--fg:#ecebf5;--mute:#8d8ba7;--a:#8b7bff;--b:#3ee6c0;--ink:#07070d;--px:"Space Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+.w{max-width:1100px;margin:auto;padding:0 20px}section{padding:46px 0}.alt{background:var(--bg2)}
+.hero .w{position:relative}.map{position:absolute;top:-40px;right:20px;padding:9px 16px;background:var(--b);color:var(--ink);font:700 15px var(--px);text-decoration:none;border:3px solid var(--ink);box-shadow:4px 4px 0 #000}.map:hover{filter:brightness(1.1)}.map:focus-visible{outline:3px solid var(--fg);outline-offset:2px}@media(max-width:520px){.map{top:-48px;right:12px;padding:7px 12px;font-size:14px}}
+.hero{padding:64px 0 46px;background:radial-gradient(900px 420px at 15% -20%,#3a2a8a88,transparent),radial-gradient(700px 380px at 100% 0,#0d6a7a66,transparent),var(--bg)}
+.lab{font:700 14px var(--px);letter-spacing:.25em;text-transform:uppercase;color:var(--b)}
+h1{font:700 clamp(60px,13vw,112px)/1 var(--px);margin:6px 0 12px;text-transform:uppercase;background:linear-gradient(90deg,var(--a),var(--b));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{max-width:620px;color:var(--mute);font-size:18px;margin:0 0 18px}
+.st{display:inline-flex;align-items:center;gap:10px;font:700 15px var(--px)}
+.sq{width:14px;height:14px;background:var(--b);border:2px solid var(--ink);animation:bl 1.6s steps(2) infinite}.off .sq{background:#ff5d73;animation:none}
+@keyframes bl{50%{opacity:.35}}@media(prefers-reduced-motion:reduce){.sq{animation:none}}
+h2{font:700 clamp(26px,5vw,38px)/1.1 var(--px);text-transform:uppercase;margin:0 0 22px;display:flex;align-items:center;gap:14px}
+h2::before{content:"";width:18px;height:18px;border:3px solid var(--fg);flex:none}h2 small{margin-left:auto;font:14px system-ui;color:var(--mute);text-transform:none}
+.blk{border:3px solid var(--ink);box-shadow:6px 6px 0 #000;border-radius:2px}
+.v{background:var(--a);color:var(--ink)}.m{background:var(--b);color:var(--ink)}.d{background:var(--card);color:var(--fg);border-color:var(--a)}.l{background:var(--fg);color:var(--ink)}
+.tiles{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}
+.tile{padding:18px 20px}.tile b{display:block;font:700 40px/1.1 var(--px)}.tile small{font-weight:700;letter-spacing:.12em;text-transform:uppercase;font-size:12px;opacity:.8}
+img.h{width:34px;height:34px;border:2px solid var(--ink);image-rendering:pixelated;flex:none;background:#0004}
+.chips{display:flex;flex-wrap:wrap;gap:14px}.chip{display:flex;align-items:center;gap:10px;padding:6px 12px 6px 6px;font-weight:700}
+.chip em{font:normal 13px var(--px);background:var(--ink);color:var(--b);padding:1px 8px;font-style:normal}
+.dg{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(min(340px,100%),1fr))}
+.dc{display:flex;align-items:center;gap:12px;padding:12px 14px}.dc>div{flex:1;min-width:0;font-weight:600}.dc small{display:block;font-weight:400;opacity:.65}
+.bg{display:grid;gap:22px;grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr))}
+.bc{padding:18px}.bh{display:flex;gap:12px;align-items:center;margin-bottom:12px}
+.ic{width:44px;height:44px;background:var(--ink);display:grid;place-items:center;font-size:22px;flex:none}
+.bh b{font:700 22px/1.1 var(--px);display:block}.bh small{opacity:.7}
+ol{list-style:none;margin:0;padding:0}.bc li{display:flex;align-items:center;gap:10px;padding:6px 0;border-top:1px solid #0003}.bc.d li{border-color:#ffffff1a}
+.rk{width:26px;height:26px;display:grid;place-items:center;font:700 14px var(--px);flex:none}.rk.t{background:var(--ink);color:var(--b)}.d .rk.t{background:var(--b);color:var(--ink)}
+.n{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}.val{font:500 15px var(--px);white-space:nowrap}
+input{width:100%;padding:14px 16px;border:3px solid var(--a);background:var(--card);color:var(--fg);font:inherit;border-radius:2px}
+input:focus{outline:3px solid var(--b);outline-offset:2px}
+.sb{position:relative}.sug{position:absolute;left:0;right:0;top:100%;z-index:5;margin:4px 0 0;padding:0;list-style:none;background:var(--card);border:3px solid var(--a);max-height:300px;overflow:auto}
+.sug li{display:flex;align-items:center;gap:10px;padding:8px 12px;cursor:pointer;font-weight:600}.sug li:hover{background:#26264a}.sug img.h{width:28px;height:28px}
+.val,.tile b{font-variant-numeric:tabular-nums}
+[data-p]{cursor:pointer}.bc li[data-p]:hover{background:#0000001a}.bc.d li[data-p]:hover{background:#ffffff12}.chip[data-p]:hover{filter:brightness(1.1)}
+.ov{position:fixed;inset:0;background:#000b;z-index:50;display:flex;justify-content:center;padding:24px 14px;overflow:auto}.ov[hidden]{display:none}
+.md{position:relative;width:100%;max-width:640px;padding:22px;margin:auto 0;cursor:default}
+.x{position:absolute;top:12px;right:12px;width:36px;height:36px;border:3px solid var(--a);background:var(--card);color:var(--fg);font:700 16px var(--px);cursor:pointer}
+.ph{display:flex;align-items:center;gap:16px;margin-bottom:16px;padding-right:44px}.ph img.h{width:72px;height:72px}
+.ph h3{margin:0;font:700 28px/1.1 var(--px);word-break:break-all}
+.badge{display:inline-block;margin-top:6px;padding:2px 10px;font-weight:700;font-size:13px;background:var(--b);color:var(--ink)}.badge.off{background:#2a2a40;color:var(--mute)}
+.info{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));margin-bottom:8px}
+.info div{background:var(--bg);padding:10px 12px;border:2px solid #ffffff1a}.info small{display:block;color:var(--mute);font-size:12px;text-transform:uppercase;letter-spacing:.08em}.info b{font:700 17px var(--px)}
+.md h4{margin:18px 0 4px;font:700 13px var(--px);letter-spacing:.14em;text-transform:uppercase;color:var(--b)}
+.rk2{font:700 12px var(--px);font-style:normal;background:#2a2a40;padding:1px 7px;margin-left:8px}.rk2.t{background:var(--b);color:var(--ink)}
+body.lock{overflow:hidden}.pc h3{display:flex;align-items:center;gap:14px;margin:0 0 8px;font:700 24px var(--px)}.pc img.h{width:56px;height:56px}
+.stat{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-top:1px solid #ffffff1a}
+.mute{color:var(--mute)}footer{border-top:8px dashed var(--b);padding:28px 20px;text-align:center;color:var(--mute);font-size:13px}
+</style></head><body>
+<section class="hero"><div class="w"><a class="map" href="https://map.nightboundesports.uk/#datapacks:0:0:0:1500:0:0:0:0:perspective" target="_blank" rel="noopener">Live Map</a><div class="lab">Live vom Server</div><h1>Stats</h1>
+<p>Wer baut, wer kämpft und wer stirbt schon wieder? Alle Zahlen live vom Nightbound-Server.</p>
+<div class="st" id="st"><i class="sq"></i><span id="stt">Verbinde …</span></div></div></section>
+
+<section class="alt"><div class="w"><div class="tiles">
+<div class="blk tile m"><b id="on">–</b><small>Online</small></div>
+<div class="blk tile v"><b id="h">–</b><small>Stunden gespielt</small></div>
+<div class="blk tile d"><b id="d">–</b><small>Tode</small></div>
+<div class="blk tile v"><b id="bl">–</b><small>Blöcke abgebaut</small></div>
+<div class="blk tile m"><b id="km">–</b><small>Kilometer gelaufen</small></div>
+<div class="blk tile d"><b id="day">–</b><small>Welt-Tag</small></div>
+<div class="blk tile m"><b id="tps">–</b><small>TPS</small></div></div></div></section>
+
+<section><div class="w"><h2 id="ot">Gerade online</h2><div class="chips" id="list"></div></div></section>
+<section class="alt"><div class="w"><h2>Zuletzt gestorben</h2><div class="dg" id="dead"></div></div></section>
+<section><div class="w"><h2>Bestenlisten <small>Top 10</small></h2><div class="bg" id="boards"></div></div></section>
+<section class="alt"><div class="w"><h2>Spieler suchen</h2>
+<div class="sb"><input id="q" placeholder="Spielername eingeben …" autocomplete="off"><ul class="sug" id="sug" hidden></ul></div>
+</div></section>
+<div class="ov" id="ov" hidden><div class="blk md d" role="dialog" aria-modal="true" aria-labelledby="mt"><button class="x" id="mx" aria-label="Schließen">✕</button><div id="mb"></div></div></div>
+<footer>Kein offizielles Minecraft-Produkt. Nicht von Mojang oder Microsoft genehmigt und nicht mit Mojang oder Microsoft verbunden.</footer>
+<script>
+const URL_STATS="/stats.json";
+const BOARDS=[["playtime","Dauerzocker","Meiste Spielzeit","Std","⏱️"],["deaths","Friedhof","Hier liegen sie. Immer wieder.","","💀"],
+["mined","Abrissbirne","Meiste Blöcke abgebaut","","⛏️"],["mobs","Monsterjäger","Meiste Mobs erledigt","","⚔️"],
+["distance","Weltenbummler","Weiteste Strecke","km","🥾"],["fish","Angler","Meiste Fische gefangen","","🎣"],
+["jumps","Hüpfer","Meiste Sprünge","","🦘"],["crafted","Handwerker","Meiste Items gecraftet","","🔨"],
+["flight","Flieger","Weiteste Elytra-Strecke","km","🪂"],["trades","Dorfhändler","Meiste Villager-Trades","","🤝"],
+["alive","Unsterblich","Längste Zeit ohne Tod","Std","🛡️"],["bred","Farmer","Meiste Tiere gezüchtet","","🐄"],
+["damage","Kämpfer","Meisten Schaden ausgeteilt","❤","🗡️"],
+["creeper","Creeper-Opfer","Am häufigsten gesprengt","","💥"]];
+const $=i=>document.getElementById(i),esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const head=(n,z=34)=>`<img class="h" data-p="${esc(n)}" src="https://minotar.net/avatar/${encodeURIComponent(n)}/${z}" alt="">`;
+const ago=t=>{const m=Math.round((Date.now()-t)/60000);return m<1?"gerade eben":m<60?`vor ${m} Min`:m<1440?`vor ${Math.round(m/60)} Std`:`vor ${Math.round(m/1440)} Tg`};
+const fmt=t=>new Date(t).toLocaleDateString("de"),nf=n=>n.toLocaleString("de"),VAR=["v","m","d"];
+const val=(v,u)=>u==="Std"?(v>=24?`${Math.floor(v/24)} T ${Math.floor(v%24)} Std`:`${nf(Math.round(v*10)/10)} Std`):`${nf(v)}${u?" "+u:""}`;
+let S=null,curP=null;
+function boards(){$("boards").innerHTML=BOARDS.map(([k,t,sub,u,ic],i)=>{const rows=S.boards[k]||[];
+return `<div class="blk bc ${VAR[(i+Math.floor(i/3))%3]}"><div class="bh"><div class="ic">${ic}</div><div><b>${t}</b><small>${sub}</small></div></div><ol>${
+rows.length?rows.map((r,j)=>`<li data-p="${esc(r.name)}"><span class="rk${j<3?" t":""}">${j+1}</span>${head(r.name)}<span class="n">${esc(r.name)}</span><span class="val">${val(r.value,u)}</span></li>`).join(""):'<li><span class="n">Noch keine Daten</span></li>'}</ol></div>`}).join("")}
+const ORDER=["playtime","deaths","mined","mobs","distance","fish","jumps","crafted","flight","trades","alive","bred","sleep","damage","creeper"];
+const pretty=k=>k?k.replace(/_/g," ").replace(/\b\w/g,c=>c.toUpperCase()):"–";
+function closeP(){$("ov").hidden=true;document.body.classList.remove("lock")}
+function openProfile(n){const p=S&&S.players[n];if(!p)return;curP=n;
+const on=S.online.includes(n),x=p.x||{},g=k=>p.v[ORDER.indexOf(k)],hrs=g("playtime"),dth=g("deaths"),mn=g("mined"),
+dd=Math.max(0,Math.floor((Date.now()-p.first)/864e5)),rank=i=>1+Object.values(S.players).filter(q=>q.v[i]>p.v[i]).length;
+const info=[["Erster Beitritt",p.first?`${fmt(p.first)} · vor ${nf(dd)} Tg`:"–"],["Zuletzt gesehen",on?"Gerade online":ago(p.last)],["Spielzeit",val(hrs,"Std")]];
+if(x.joins!=null)info.push(["Beitritte",nf(x.joins)]);
+const ex=[];
+if(x.block)ex.push(["Lieblingsblock",`${pretty(x.block)} · ${nf(x.blockN)}×`]);
+if(x.mob)ex.push(["Meistbesiegter Mob",`${pretty(x.mob)} · ${nf(x.mobN)}×`]);
+if(x.taken!=null)ex.push(["Schaden erlitten",`${nf(x.taken)} ❤`]);
+if(x.chests!=null)ex.push(["Truhen geöffnet",nf(x.chests)]);
+if(dth>0&&hrs>0)ex.push(["Ein Tod alle",`${nf(Math.round(hrs/dth*10)/10)} Std`]);
+if(hrs>0&&mn>0)ex.push(["Blöcke pro Stunde",nf(Math.round(mn/hrs))]);
+const row=(a,b)=>`<div class="stat"><span>${a}</span><span class="val">${b}</span></div>`;
+$("mb").innerHTML=`<div class="ph">${head(n,72)}<div><h3 id="mt">${esc(n)}</h3><span class="badge${on?"":" off"}">${on?"Online":"Offline"}</span></div></div>
+<div class="info">${info.map(([a,b])=>`<div><small>${a}</small><b>${b}</b></div>`).join("")}</div>
+<h4>Bestenlisten-Plätze</h4>${BOARDS.map(b=>{const i=ORDER.indexOf(b[0]),v=p.v[i],r=v>0?rank(i):0;return `<div class="stat"><span>${b[4]} ${b[1]}</span><span><span class="val">${val(v,b[3])}</span>${r?`<em class="rk2${r<4?" t":""}">#${r}</em>`:""}</span></div>`}).join("")}
+${ex.length?`<h4>Mehr Stats</h4>${ex.map(([a,b])=>row(a,b)).join("")}`:""}`;
+if($("ov").hidden)$("mx").focus();$("ov").hidden=false;document.body.classList.add("lock")}
+function suggest(){const t=$("q").value.trim().toLowerCase(),u=$("sug");if(!t){u.hidden=true;return}
+const m=(S?Object.keys(S.players):[]).filter(n=>n.toLowerCase().includes(t)).sort((a,b)=>(b.toLowerCase().startsWith(t))-(a.toLowerCase().startsWith(t))||a.localeCompare(b)).slice(0,8);
+u.innerHTML=m.length?m.map(n=>`<li data-n="${esc(n)}">${head(n,28)}<span>${esc(n)}</span></li>`).join(""):`<li class="mute">${S?"Kein Spieler gefunden":"Daten werden geladen …"}</li>`;u.hidden=false}
+function pick(n){$("q").value=n;$("sug").hidden=true;openProfile(n)}
+async function load(){try{
+S=await (await fetch(URL_STATS)).json();const s=S,v=s.server;
+$("st").classList.remove("off");$("stt").textContent=`Server online · ${s.online.length} / ${v.max} Spieler · aktualisiert um ${new Date().toLocaleTimeString("de")}`;
+$("on").textContent=s.online.length;$("h").textContent=nf(s.hours);$("d").textContent=nf(s.totalDeaths);$("bl").textContent=nf(s.totalBlocks);$("km").textContent=nf(s.totalKm);
+$("day").textContent=nf(v.day);$("tps").textContent=v.tps;
+$("ot").textContent=`Gerade online (${s.online.length})`;
+$("list").innerHTML=s.online.length?s.online.map(n=>{const p=s.players[n];return `<div class="blk chip v" data-p="${esc(n)}">${head(n)}<span>${esc(n)}</span><em title="Spielstunden">${nf(Math.round(p?p.v[0]:0))}</em></div>`}).join(""):'<span class="mute">Niemand online</span>';
+$("dead").innerHTML=s.recentDeaths.length?s.recentDeaths.map(x=>`<div class="blk dc l">${head(x.name,40)}<div>${esc(x.text||x.name)}<small>${ago(x.time)}</small></div>${x.killer?head(x.killer,40):""}</div>`).join(""):'<div class="blk dc l"><div>Noch nichts passiert</div></div>';
+boards();if(!$("ov").hidden)openProfile(curP);if(document.activeElement===$("q"))suggest()}catch(e){$("st").classList.add("off");$("stt").textContent="Server nicht erreichbar"}}
+$("q").addEventListener("input",suggest);
+$("q").addEventListener("focus",suggest);
+$("q").addEventListener("keydown",e=>{if(e.key==="Enter"){const f=$("sug").querySelector("li[data-n]");if(f)pick(f.dataset.n)}});
+$("sug").addEventListener("click",e=>{const li=e.target.closest("li[data-n]");if(li)pick(li.dataset.n)});
+document.addEventListener("click",e=>{if(!e.target.closest(".sb"))$("sug").hidden=true;const t=e.target.closest("[data-p]");if(t&&!t.closest("#ov"))openProfile(t.dataset.p)});
+$("mx").onclick=closeP;$("ov").addEventListener("click",e=>{if(e.target===$("ov"))closeP()});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeP()});
+load();setInterval(load,15000);
+</script></body></html>
