@@ -2,3 +2,12 @@ name: NightboundStats
 main: de.nightbound.NightboundStats
 version: 1.0
 api-version: '26.1'
+commands:
+  resetday:
+    description: Setzt die Weltzeit wie in einer neuen Welt zurueck (Tag 1)
+    usage: /resetday
+    permission: nightboundstats.resetday
+permissions:
+  nightboundstats.resetday:
+    description: Darf den Welt-Tag zuruecksetzen
+    default: op
