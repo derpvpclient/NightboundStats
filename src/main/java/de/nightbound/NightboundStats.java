@@ -2,6 +2,8 @@ package de.nightbound;
 
 import com.google.gson.*;
 import com.sun.net.httpserver.HttpServer;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -10,6 +12,8 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Bisected;
 import org.bukkit.block.data.type.Slab;
 import org.bukkit.block.data.type.Stairs;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -29,6 +33,9 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 
 public class NightboundStats extends JavaPlugin implements Listener {
     private HttpServer http;
+    private volatile long dayOffset;
+    private double dayFactor = 1.0, slowAcc = 0;
+    private long lastTime = -1;
     private volatile String json = "{}";
     private volatile JsonObject boards = new JsonObject(), players = new JsonObject();
     private volatile double hours, totalDeaths, totalBlocks, totalKm;
@@ -38,6 +45,9 @@ public class NightboundStats extends JavaPlugin implements Listener {
 
     @Override public void onEnable() {
         saveDefaultConfig();
+        dayOffset = getConfig().getLong("day-offset", 0L);
+        dayFactor = Math.max(1.0, Math.min(10.0, getConfig().getDouble("day-length-factor", 1.5)));
+        getLogger().info("Tageslaenge: x" + dayFactor + " (1 Tag = " + Math.round(20 * dayFactor) + " Minuten)");
         if (!new File(getDataFolder(), "stats.html").exists()) saveResource("stats.html", false);
         getServer().getPluginManager().registerEvents(this, this);
         try {
@@ -64,11 +74,28 @@ public class NightboundStats extends JavaPlugin implements Listener {
         Bukkit.getScheduler().runTaskTimerAsynchronously(this, this::computeBoards, 20L, 20L * 60);
         Bukkit.getScheduler().runTaskTimer(this, this::publish, 40L, 20L * 10);
         Bukkit.getScheduler().runTaskTimer(this, this::checkSeats, 2L, 2L);
+        Bukkit.getScheduler().runTaskTimer(this, this::slowTime, 1L, 1L);
     }
 
     @Override public void onDisable() {
         if (http != null) http.stop(0);
         seats.values().forEach(ArmorStand::remove);
+    }
+
+    @Override public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+        if (!cmd.getName().equalsIgnoreCase("resetday")) return false;
+        if (!sender.hasPermission("nightboundstats.resetday")) {
+            sender.sendMessage(Component.text("Dazu hast du keine Berechtigung. Nur Operatoren dürfen /resetday nutzen.", NamedTextColor.RED));
+            return true;
+        }
+        Bukkit.getWorlds().get(0).setFullTime(0L);
+        dayOffset = 0L;
+        lastTime = -1;
+        getConfig().set("day-offset", 0L);
+        saveConfig();
+        sender.sendMessage(Component.text("Zeit auf 0 gesetzt wie in einer neuen Welt. Die Stats-Seite zeigt jetzt Tag 1.", NamedTextColor.GREEN));
+        if (sender instanceof Player) getLogger().info(sender.getName() + " hat /resetday ausgeführt.");
+        return true;
     }
 
     @EventHandler public void onDeath(PlayerDeathEvent e) {
@@ -101,7 +128,7 @@ public class NightboundStats extends JavaPlugin implements Listener {
         sv.addProperty("tps", Math.round(Math.min(20.0, Bukkit.getTPS()[0]) * 10) / 10.0);
         sv.addProperty("night", t >= 13000 && t < 23000);
         sv.addProperty("weather", w.isThundering() ? "thunder" : w.hasStorm() ? "rain" : "clear");
-        sv.addProperty("day", w.getFullTime() / 24000 + 1);
+        sv.addProperty("day", Math.max(0L, w.getFullTime() - dayOffset) / 24000 + 1);
         sv.addProperty("max", Bukkit.getMaxPlayers());
         o.add("server", sv);
         o.add("players", players);
@@ -210,6 +237,20 @@ public class NightboundStats extends JavaPlugin implements Listener {
         st.addPassenger(p);
         seats.put(p.getUniqueId(), st);
         e.setCancelled(true);
+    }
+
+    // Macht den Tag laenger: bremst die Weltzeit, ohne Gamerules anzufassen.
+    // Greift nur, wenn die Zeit pro Tick genau um 1 weiterlaeuft (nicht beim Schlafen oder bei /time).
+    private void slowTime() {
+        if (dayFactor <= 1.0) return;
+        var w = Bukkit.getWorlds().get(0);
+        long now = w.getFullTime(), t = now;
+        if (lastTime >= 0 && now - lastTime == 1) {
+            slowAcc += 1.0 - 1.0 / dayFactor;
+            while (slowAcc >= 1.0) { t -= 1; slowAcc -= 1.0; }
+            if (t != now) w.setFullTime(t);
+        }
+        lastTime = t;
     }
 
     private void checkSeats() {
