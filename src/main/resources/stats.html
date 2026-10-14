@@ -66,7 +66,8 @@ body.lock{overflow:hidden}.pc h3{display:flex;align-items:center;gap:14px;margin
 <div class="blk tile v"><b id="bl">–</b><small>Blöcke abgebaut</small></div>
 <div class="blk tile m"><b id="km">–</b><small>Kilometer gelaufen</small></div>
 <div class="blk tile d"><b id="day">–</b><small>Welt-Tag</small></div>
-<div class="blk tile m"><b id="tps">–</b><small>TPS</small></div></div></div></section>
+<div class="blk tile m"><b id="tps">–</b><small>TPS</small></div>
+<div class="blk tile v"><b id="bk">–</b><small>Diamanten in der Bank</small></div></div></div></section>
 
 <section><div class="w"><h2 id="ot">Gerade online</h2><div class="chips" id="list"></div></div></section>
 <section class="alt"><div class="w"><h2>Zuletzt gestorben</h2><div class="dg" id="dead"></div></div></section>
@@ -85,7 +86,8 @@ const BOARDS=[["playtime","Dauerzocker","Meiste Spielzeit","Std","⏱️"],["dea
 ["flight","Flieger","Weiteste Elytra-Strecke","km","🪂"],["trades","Dorfhändler","Meiste Villager-Trades","","🤝"],
 ["alive","Unsterblich","Längste Zeit ohne Tod","Std","🛡️"],["bred","Farmer","Meiste Tiere gezüchtet","","🐄"],
 ["damage","Kämpfer","Meisten Schaden ausgeteilt","❤","🗡️"],
-["creeper","Creeper-Opfer","Am häufigsten gesprengt","","💥"]];
+["creeper","Creeper-Opfer","Am häufigsten gesprengt","","💥"],
+["bank","Diamantenbank","Meiste Diamanten in der Bank","Dias","💎"]];
 const $=i=>document.getElementById(i),esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const head=(n,z=34)=>`<img class="h" data-p="${esc(n)}" src="https://minotar.net/avatar/${encodeURIComponent(n)}/${z}" alt="">`;
 const ago=t=>{const m=Math.round((Date.now()-t)/60000);return m<1?"gerade eben":m<60?`vor ${m} Min`:m<1440?`vor ${Math.round(m/60)} Std`:`vor ${Math.round(m/1440)} Tg`};
@@ -113,7 +115,7 @@ if(hrs>0&&mn>0)ex.push(["Blöcke pro Stunde",nf(Math.round(mn/hrs))]);
 const row=(a,b)=>`<div class="stat"><span>${a}</span><span class="val">${b}</span></div>`;
 $("mb").innerHTML=`<div class="ph">${head(n,72)}<div><h3 id="mt">${esc(n)}</h3><span class="badge${on?"":" off"}">${on?"Online":"Offline"}</span></div></div>
 <div class="info">${info.map(([a,b])=>`<div><small>${a}</small><b>${b}</b></div>`).join("")}</div>
-<h4>Bestenlisten-Plätze</h4>${BOARDS.map(b=>{const i=ORDER.indexOf(b[0]),v=p.v[i],r=v>0?rank(i):0;return `<div class="stat"><span>${b[4]} ${b[1]}</span><span><span class="val">${val(v,b[3])}</span>${r?`<em class="rk2${r<4?" t":""}">#${r}</em>`:""}</span></div>`}).join("")}
+<h4>Bestenlisten-Plätze</h4>${BOARDS.map(b=>{const bk=b[0]==="bank",i=ORDER.indexOf(b[0]),v=bk?((S.bankAll||{})[n]||0):p.v[i],r=v>0?(bk?1+Object.values(S.bankAll||{}).filter(q=>q>v).length:rank(i)):0;return `<div class="stat"><span>${b[4]} ${b[1]}</span><span><span class="val">${val(v,b[3])}</span>${r?`<em class="rk2${r<4?" t":""}">#${r}</em>`:""}</span></div>`}).join("")}
 ${ex.length?`<h4>Mehr Stats</h4>${ex.map(([a,b])=>row(a,b)).join("")}`:""}`;
 if($("ov").hidden)$("mx").focus();$("ov").hidden=false;document.body.classList.add("lock")}
 function suggest(){const t=$("q").value.trim().toLowerCase(),u=$("sug");if(!t){u.hidden=true;return}
@@ -124,7 +126,7 @@ async function load(){try{
 S=await (await fetch(URL_STATS)).json();const s=S,v=s.server;
 $("st").classList.remove("off");$("stt").textContent=`Server online · ${s.online.length} / ${v.max} Spieler · aktualisiert um ${new Date().toLocaleTimeString("de")}`;
 $("on").textContent=s.online.length;$("h").textContent=nf(s.hours);$("d").textContent=nf(s.totalDeaths);$("bl").textContent=nf(s.totalBlocks);$("km").textContent=nf(s.totalKm);
-$("day").textContent=nf(v.day);$("tps").textContent=v.tps;
+$("day").textContent=nf(v.day);$("tps").textContent=v.tps;$("bk").textContent=nf(s.bankTotal||0);
 $("ot").textContent=`Gerade online (${s.online.length})`;
 $("list").innerHTML=s.online.length?s.online.map(n=>{const p=s.players[n];return `<div class="blk chip v" data-p="${esc(n)}">${head(n)}<span>${esc(n)}</span><em title="Spielstunden">${nf(Math.round(p?p.v[0]:0))}</em></div>`}).join(""):'<span class="mute">Niemand online</span>';
 $("dead").innerHTML=s.recentDeaths.length?s.recentDeaths.map(x=>`<div class="blk dc l">${head(x.name,40)}<div>${esc(x.text||x.name)}<small>${ago(x.time)}</small></div>${x.killer?head(x.killer,40):""}</div>`).join(""):'<div class="blk dc l"><div>Noch nichts passiert</div></div>';

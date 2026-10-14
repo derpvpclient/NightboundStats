@@ -1,13 +1,19 @@
 name: NightboundStats
 main: de.nightbound.NightboundStats
-version: 1.0
+version: 1.1
 api-version: '26.1'
 commands:
   resetday:
     description: Setzt die Weltzeit wie in einer neuen Welt zurueck (Tag 1)
     usage: /resetday
     permission: nightboundstats.resetday
+  bank:
+    description: Oeffnet die Diamantenbank
+    usage: /bank
 permissions:
   nightboundstats.resetday:
     description: Darf den Welt-Tag zuruecksetzen
+    default: op
+  nightboundstats.bank.admin:
+    description: Darf Bank-Schilder erstellen und abbauen
     default: op

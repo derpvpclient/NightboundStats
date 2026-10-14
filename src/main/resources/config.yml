@@ -4,3 +4,5 @@ port: 8123
 day-offset: 0
 # Tageslaenge: 1.0 = normal (20 Min), 1.5 = 30 Min, 2.0 = 40 Min (1.0 bis 10.0)
 day-length-factor: 1.5
+# true = jeder darf die Bank mit /bank oeffnen, false = nur ueber die Bank-Schilder (Admins immer)
+bank-command: true
