@@ -1,2 +1,6 @@
 # Port, auf dem die Seite und /stats.json erreichbar sind
 port: 8123
+# Wird von /resetday auf 0 gesetzt, nicht von Hand aendern
+day-offset: 0
+# Tageslaenge: 1.0 = normal (20 Min), 1.5 = 30 Min, 2.0 = 40 Min (1.0 bis 10.0)
+day-length-factor: 1.5
